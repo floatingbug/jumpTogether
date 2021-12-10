@@ -3,8 +3,9 @@ const socketapi = {
 	io: io
 }
 const Player = require('./Player');
-
 const players = [];
+const Map1 = require('./maps/map1');
+const map1 = new Map1();
 
 io.on('connection', (socket)=>{
 	var player = new Player(50, 50, socket.id, 20, 20, 'orange')
@@ -20,11 +21,17 @@ io.on('connection', (socket)=>{
 
 	//game-loop
 	setInterval(()=>{
-		//call useGravity-function from all Players
-		players[0].useGravity()
-		//send all updated players to all clients
-		io.emit('allPlayers', players)
-	}, 1000/60)
+		if(players.length !== 0){
+			//call useGravity-function from all Players
+			players[0].useGravity()
+
+			//send all updated players to all clients
+			io.emit('allPlayers', players)
+			
+			//send the map to all user
+			io.emit('map', map1.collision_array)
+		}
+	}, 1000/60);
 	
 })
 
