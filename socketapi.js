@@ -5,12 +5,13 @@ const socketapi = {
 const Player = require('./Player');
 const players = [];
 const Map1 = require('./maps/map1');
-const map1 = new Map1();
+const map1 = new Map1(800, 600);
 
 io.on('connection', (socket)=>{
 	var player = new Player(50, 50, socket.id, 20, 20, 'orange')
 	players.push(player)
-	
+
+	//handle player-input
 	socket.on('keyCode', (keyCode)=>{
 		movePlayer(socket, keyCode)
 	})
@@ -29,7 +30,7 @@ io.on('connection', (socket)=>{
 			io.emit('allPlayers', players)
 			
 			//send the map to all user
-			io.emit('map', map1.collision_array)
+			io.emit('map', map1.geometric_map_array)
 		}
 	}, 1000/60);
 	
@@ -47,11 +48,6 @@ function movePlayer(socket, keyCode){
 	}
 }
 
-function callGravityFunctions(){
-	for(var i=0; i<players.length; i++){
-		players[i].useGravity()
-	}
-}
 
 
 

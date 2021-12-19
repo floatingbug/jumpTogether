@@ -5,6 +5,7 @@ function Player(x, y, socket_id, w, h, color){
 	this.h = h;
 	this.color = color;
 	this.socket_id = socket_id;
+	
 }
 
 Player.prototype.useGravity = function(){

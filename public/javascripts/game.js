@@ -2,8 +2,15 @@ const socket = io();
 
 const c = document.createElement('canvas');
 document.body.appendChild(c)
-c.width = window.innerWidth;
-c.height = window.innerHeight;
+c.width = 800;
+c.height = 600;
+c.style.position = "absolute";
+c.style.display = "block";
+c.style.left = "0";
+c.style.right = "0";
+c.style.top = "0";
+c.style.bottom = "0";
+c.style.margin = "auto";
 const ctx = c.getContext('2d');
 var players = [];
 var map = [];
@@ -20,21 +27,24 @@ function gameloop(){
 		}
 	})
 
-	//receive map data
-	socket.on('map', (map)=>{
-		for(var i=0; i<map.length; i++){
-			map.push(map[i])
-		}
+	//receive map-data
+	socket.on('map', (data)=>{
+		map = data;
 	})
 	
 	//draw the game
 	draw()
 	
-	//call the gameloop again
-	requestAnimationFrame(gameloop)
+	//clean game data
+	cleanGameData()
+	
+	setTimeout(()=>{
+		requestAnimationFrame(gameloop)
+	}, 500)
 }
 
-requestAnimationFrame(gameloop)
+//start the gameloop
+gameloop()
 
 function sendPlayerInputs(e){
 	e.preventDefault()
@@ -49,11 +59,18 @@ function cleanCanvas(){
 	ctx.fillRect(0,0,window.innerWidth,window.innerHeight)
 }
 
+function cleanGameData(){
+	map = [];
+}
+
 function draw(){
 	cleanCanvas()
 	
 	//draw the map
-	for(
+	for(var i=0; i<map.length; i++){
+		ctx.fillStyle = 'green';
+		ctx.fillRect(map[i].xpos, map[i].ypos, map[i].w, map[i].h)
+	}
 
 	//draw all players
 	for(var i=0; i<players.length; i++){
